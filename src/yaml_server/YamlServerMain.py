@@ -52,7 +52,9 @@ class YamlServerMain(YamlDaemon):
                 self.logger.setLevel(yaml_server.__config__["loglevel"])
         except Exception, e:
             self.logger.fatal("Could not initialize yaml_server configuration from %s: %s" % (options.confdir,str(e)))
-            sys.exit(1)
+            print "Could not initialize yaml_server configuration!"
+            raise 
+
 
 
     def run(self):
