@@ -1,5 +1,5 @@
 import yaml_server
-from YamlServer import YamlServerRequestHandler
+from YamlServerRequestHandler import YamlServerRequestHandler
 from YamlServerException import YamlServerException
 from YamlReader import YamlReader
 from YamlLocations import YamlLocations

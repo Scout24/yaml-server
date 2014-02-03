@@ -1,15 +1,8 @@
 import yaml_server
-from yaml_server.YamlLocations import YamlLocations
 from yaml_server.YamlServerException import YamlServerException
 
-# ignore popen2 deprecation warning
-import warnings
-warnings.filterwarnings("ignore")
-
 import SimpleHTTPServer
-
 import logging
-
 import hashlib
 
 class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
@@ -26,6 +19,7 @@ class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         status = 500
         content_type = "text/plain"
         etag = None
+        last_modified_time = None
         if "Range" in self.headers:
             # filter out things that we don't support
             content = "Range header is not supported"
@@ -36,6 +30,7 @@ class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                     content = yaml_server.__config__["locations"].get_locations_as_yaml()
                 else:
                     content = yaml_server.__config__["locations"].get_yaml(self.path[1:])  # get everything from after the /
+                    last_modified_time = yaml_server.__config__["locations"].get_last_modified_date(self.path[1:])
                 # successfully loaded YAML content
                 status = 200
                 content_type = "application/yaml"
@@ -53,6 +48,8 @@ class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if content:
             self.send_header("Content-length", len(content))
             self.send_header("Content-type", content_type)
+            if last_modified_time:
+                self.send_header("Last-Modified", self.date_time_string(last_modified_time))
         if etag:
             self.send_header("ETag",etag)
         self.end_headers()

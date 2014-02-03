@@ -31,6 +31,9 @@ class YamlLocations:
         else:
             raise YamlServerException("No configuration found for %s" % location)
 
+    def get_last_modified_date(self, location):
+        return os.path.getmtime(self.locations[location])
+
     def get_locations(self):
         return self.locations.keys()
 
