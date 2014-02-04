@@ -3,7 +3,6 @@ import yaml_server
 from unittest2 import TestCase
 from mock import MagicMock
 import mock
-import __builtin__
 
 
 class YamlServerRequestHandler_tests(TestCase):
