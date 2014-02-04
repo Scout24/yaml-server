@@ -1,6 +1,6 @@
 from yaml_server.YamlServerRequestHandler import YamlServerRequestHandler
 import yaml_server
-from unittest2 import TestCase
+from unittest import TestCase
 from mock import MagicMock
 import mock
 
