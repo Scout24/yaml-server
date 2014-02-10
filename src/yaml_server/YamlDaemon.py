@@ -181,7 +181,7 @@ class YamlDaemon:
             return 0
         else:
             print "Not running"
-            return 1
+            return 3
 
     def stop(self):
         """
