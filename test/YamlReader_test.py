@@ -48,5 +48,4 @@ class Test(unittest.TestCase):
         self.assertEqual(YamlReader("/",defaultdata={"foo":"bar"},displayname=self.id()).get(), {"foo":"bar"})
         
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.test_should_return_default_data_if_invalid_file_given']
     unittest.main()
