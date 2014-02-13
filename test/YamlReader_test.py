@@ -30,22 +30,22 @@ class Test(unittest.TestCase):
     logger.setLevel(logging.DEBUG)
     
     def test_should_correctly_merge_single_yaml_file(self):
-        self.assertEqual(YamlReader("testdata/data1/test1.yaml",displayname="test_should_correctly_merge_single_yaml_file").get(),self.data1_data)
+        self.assertEqual(YamlReader("testdata/data1/test1.yaml",displayname=self.id()).get(),self.data1_data)
         
     def test_should_correctly_merge_yaml_files_from_dir(self):
-        self.assertEqual(YamlReader("testdata/data1", defaultdata={"data3":"foo"},displayname="test_should_correctly_merge_yaml_files_from_dir").get(), self.data2_data)
+        self.assertEqual(YamlReader("testdata/data1", defaultdata={"data3":"foo"},displayname=self.id()).get(), self.data2_data)
 
     def test_should_fail_on_invalid_yaml_dir(self):
-        self.assertRaises(YamlServerException, YamlReader, "/dev/null",displayname="test_should_fail_on_invalid_yaml_dir")
+        self.assertRaises(YamlServerException, YamlReader, "/dev/null",displayname=self.id())
     
     def test_should_return_default_data_if_invalid_file_given(self):
-        self.assertEqual(YamlReader("/dev/null",defaultdata={"foo":"bar"},displayname="test_should_return_default_data_if_invalid_file_given").get(), {"foo":"bar"})
+        self.assertEqual(YamlReader("/dev/null",defaultdata={"foo":"bar"},displayname=self.id()).get(), {"foo":"bar"})
 
     def test_should_fail_on_invalid_yaml_file(self):
-        self.assertRaises(YamlServerException, YamlReader, "setup.cfg",displayname="test_should_fail_on_invalid_yaml_file")
+        self.assertRaises(YamlServerException, YamlReader, "setup.cfg",displayname=self.id())
 
     def test_should_return_default_data_if_invalid_dir_given(self):
-        self.assertEqual(YamlReader("/",defaultdata={"foo":"bar"},displayname="test_should_return_default_data_if_invalid_dir_given").get(), {"foo":"bar"})
+        self.assertEqual(YamlReader("/",defaultdata={"foo":"bar"},displayname=self.id()).get(), {"foo":"bar"})
         
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_should_return_default_data_if_invalid_file_given']
