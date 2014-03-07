@@ -12,6 +12,8 @@ def dict_merge(a, b, path=None):
     and extended to also merge arrays and to replace the content of keys with the same name"""
     if path is None:
         path = []
+    if b is None:
+        b = []
     for key in b:
         if key in a:
             if isinstance(a[key], dict) and isinstance(b[key], dict):

@@ -45,6 +45,9 @@ class Test(unittest.TestCase):
 
     def test_should_return_default_data_if_invalid_dir_given(self):
         self.assertEqual(YamlReader("/", defaultdata={"foo": "bar"}, displayname=self.id()).get(), {"foo": "bar"})
+    
+    def test_should_ignore_an_empty_yaml_file_in_dir(self):
+        self.assertEqual(YamlReader("testdata/data_with_empty_file", displayname=self.id()).get(), self.data1_data)
 
 if __name__ == "__main__":
     unittest.main()
