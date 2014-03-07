@@ -28,7 +28,7 @@ def dict_merge(a, b, path=None):
 class YamlReader(object):
     def __init__(self, dir_path, displayname=None, defaultdata=None):
         self.logger = logging.getLogger(__name__)
-        self.logger.debug("initilized with dir_path=%s, displayname=%s,defaultdata=%s"
+        self.logger.debug("initialized with dir_path=%s, displayname=%s,defaultdata=%s"
                           % (dir_path, displayname, defaultdata))
         if not displayname:
             displayname = os.path.basename(dir_path)

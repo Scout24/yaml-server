@@ -17,7 +17,7 @@ class YamlDaemon(object):
 
     Found in http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/
     """
-    args = []  # command line argments that are not options go here
+    args = []  # command line arguments that are not options go here
 
     def __init__(self, pidfile=None, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
         self.stdin = stdin
