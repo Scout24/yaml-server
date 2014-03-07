@@ -1,8 +1,15 @@
-import sys, os, time, atexit, pwd, grp, logging
+import sys
+import os
+import time
+import atexit
+import pwd
+import grp
+import logging
 from signal import SIGTERM, SIGKILL
 from yaml_server.YamlServerException import YamlServerException
 
-class YamlDaemon:
+
+class YamlDaemon(object):
     """
     A generic daemon class.
 
@@ -99,7 +106,6 @@ class YamlDaemon:
             # no pid means no process
             return False
 
-
     def _read_pid(self):
         """
         Return pid from pidfile
@@ -118,7 +124,6 @@ class YamlDaemon:
             raise YamlServerException("Could not read pid from pidfile %s: %s" % (self.pidfile, str(e)))
 
         return self.pid
-
 
     def delpidfile(self):
         os.remove(self.pidfile)
@@ -152,7 +157,6 @@ class YamlDaemon:
 
         # Ensure a very conservative umask
         os.umask(077)
-
 
     def start(self):
         """
