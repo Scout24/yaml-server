@@ -6,14 +6,12 @@ import logging
 from yaml_server.YamlServerException import YamlServerException
 
 
-def dict_merge(a, b, path=None):
+def dict_merge(a, b, path=[]):
     """merges b into a
     based on http://stackoverflow.com/questions/7204805/python-dictionaries-of-dictionaries-merge
     and extended to also merge arrays and to replace the content of keys with the same name"""
-    if path is None:
-        path = []
-    if b is None:
-        b = []
+    if not b:
+        return
     for key in b:
         if key in a:
             if isinstance(a[key], dict) and isinstance(b[key], dict):

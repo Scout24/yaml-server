@@ -2,6 +2,7 @@ import unittest
 import logging
 from yaml_server.YamlReader import YamlReader
 from yaml_server.YamlServerException import YamlServerException
+from yaml_server.YamlReader import dict_merge
 
 
 class Test(unittest.TestCase):
@@ -48,6 +49,13 @@ class Test(unittest.TestCase):
     
     def test_should_ignore_an_empty_yaml_file_in_dir(self):
         self.assertEqual(YamlReader("testdata/data_with_empty_file", displayname=self.id()).get(), self.data1_data)
+        
+    def test_should_merge_dict_of_dict(self):
+        self.assertEqual(
+            dict_merge(
+                {"one": {"one": 1, "two": 2}},
+                {"one": {"one": 1, "three": 3}}),
+            { "one": {"one": 1, "two": 2, "three": 3}})
 
 if __name__ == "__main__":
     unittest.main()
