@@ -59,6 +59,7 @@ class YamlServerMain(YamlDaemon):
 
     def run(self):
         try:
+            SocketServer.TCPServer.allow_reuse_address = True
             httpd = SocketServer.TCPServer(("", yaml_server.__config__["port"]), YamlServerRequestHandler)
         except Exception, e:
             self.logger.fatal("Could not start server: %s" % str(e))
