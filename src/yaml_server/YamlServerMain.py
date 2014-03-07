@@ -90,4 +90,3 @@ class YamlServerMain(YamlDaemon):
             self.logger.debug("Unexpeted Shutdown: %s" % str(e))
             from traceback import print_exc
             print_exc(file=sys.stderr)
-    
