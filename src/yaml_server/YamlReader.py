@@ -5,11 +5,13 @@ import os
 import logging
 from yaml_server.YamlServerException import YamlServerException
 
+
 def dict_merge(a, b, path=None):
     """merges b into a
     based on http://stackoverflow.com/questions/7204805/python-dictionaries-of-dictionaries-merge
     and extended to also merge arrays and to replace the content of keys with the same name"""
-    if path is None: path = []
+    if path is None:
+        path = []
     for key in b:
         if key in a:
             if isinstance(a[key], dict) and isinstance(b[key], dict):
@@ -24,11 +26,12 @@ def dict_merge(a, b, path=None):
 
 
 class YamlReader(object):
-    def __init__(self,dir_path,displayname=None, defaultdata=None):
+    def __init__(self, dir_path, displayname=None, defaultdata=None):
         self.logger = logging.getLogger(__name__)
-        self.logger.debug("initilized with dir_path=%s, displayname=%s,defaultdata=%s" %(dir_path,displayname,defaultdata))
+        self.logger.debug("initilized with dir_path=%s, displayname=%s,defaultdata=%s"
+                          % (dir_path, displayname, defaultdata))
         if not displayname:
-            displayname=os.path.basename(dir_path)
+            displayname = os.path.basename(dir_path)
         if defaultdata:
             self.data = defaultdata
         else:
@@ -37,7 +40,7 @@ class YamlReader(object):
         if os.path.isfile(dir_path):
             files = [dir_path]
         else:
-            files = sorted(glob.glob(os.path.join(dir_path,"*.yaml")))
+            files = sorted(glob.glob(os.path.join(dir_path, "*.yaml")))
         if files:
             self.logger.debug("Reading %s\n" % ", ".join(files))
             for f in files:
@@ -46,12 +49,11 @@ class YamlReader(object):
                 except MarkedYAMLError, e:
                     self.logger.error("YAML Error: %s" % str(e))
                     raise YamlServerException("YAML Error: %s" % str(e))
-                dict_merge(self.data,new_data)
+                dict_merge(self.data, new_data)
         else:
             if not defaultdata:
                 self.logger.warning("No .yaml files found in %s and no default data given" % dir_path)
                 raise YamlServerException("No .yaml files found in %s" % displayname)
-
 
     def get(self):
         return self.data
@@ -61,5 +63,5 @@ class YamlReader(object):
 
 
 if __name__ == "__main__":
-    usage='''YAML Reader merges all .yaml files in a directory given as arg.'''
-    print YamlReader(sys.argv[1],"%s from cmdline" % sys.argv[1]).dump()
+    usage = '''YAML Reader merges all .yaml files in a directory given as arg.'''
+    print YamlReader(sys.argv[1], "%s from cmdline" % sys.argv[1]).dump()
