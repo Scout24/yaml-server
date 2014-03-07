@@ -81,11 +81,11 @@ class YamlServerMain(YamlDaemon):
             # register proper kill handlers so that we can be killed cleanly
             signal.signal(signal.SIGINT, shutdown_func)
             signal.signal(signal.SIGTERM, shutdown_func)
-            # long poll to be nice to the system ressources. This is fine as long as httpd.shutdown() does not work for us. See SocketServer for details.
+            # long poll to be nice to the system resources. This is fine as long as httpd.shutdown() does not work for us. See SocketServer for details.
             httpd.serve_forever()
         except SystemExit:
             pass
         except Exception, e:
-            self.logger.debug("Unexpeted Shutdown: %s" % str(e))
+            self.logger.debug("Unexpected Shutdown: %s" % str(e))
             from traceback import print_exc
             print_exc(file=sys.stderr)
