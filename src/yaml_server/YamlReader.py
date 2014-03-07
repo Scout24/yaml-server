@@ -51,14 +51,14 @@ class YamlReader(object):
             if not defaultdata:
                 self.logger.warning("No .yaml files found in %s and no default data given" % dir_path)
                 raise YamlServerException("No .yaml files found in %s" % displayname)
-    
+
 
     def get(self):
         return self.data
-    
+
     def dump(self):
         return safe_dump(self.data, indent=4, default_flow_style=False, canonical=False)
-    
+
 
 if __name__ == "__main__":
     usage='''YAML Reader merges all .yaml files in a directory given as arg.'''

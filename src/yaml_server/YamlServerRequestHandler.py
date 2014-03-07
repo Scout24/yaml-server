@@ -6,13 +6,13 @@ import logging
 import hashlib
 
 class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
-    
+
     def __init__(self, *args):
         self.logger = logging.getLogger(__name__)
         # the top-level ancestor (BaseRequestHandler) is NOT a new-style class and does NOT inherit object!
         SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, *args)
-    
-    
+
+
     def do_GET(self, onlyHeaders=False):
         '''Serve a GET request'''
 
@@ -24,7 +24,7 @@ class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             # filter out things that we don't support
             content = "Range header is not supported"
             status = 501
-        else:                        
+        else:
             try:
                 if not self.path or self.path == "/":
                     content = yaml_server.__config__["locations"].get_locations_as_yaml()
@@ -39,11 +39,11 @@ class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 if etag_header in self.headers and etag == self.headers.get(etag_header):
                     status = 304
                     content = None
-                    
+
             except YamlServerException, e:
                 content = e.message
-                status = 404 
-    
+                status = 404
+
         self.send_response(status)
         if content:
             self.send_header("Content-length", len(content))
@@ -53,18 +53,18 @@ class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if etag:
             self.send_header("ETag",etag)
         self.end_headers()
-        
+
         if not onlyHeaders and content:
             self.wfile.write(content)
 
     def do_HEAD(self):
         """Serve a HEAD request."""
         self.do_GET(True)
-        
+
     def end_headers(self):
         """Send standard headers and end header sending"""
         SimpleHTTPServer.SimpleHTTPRequestHandler.end_headers(self)
-        
+
     def log_message(self, format, *args):
         """Log an arbitrary message.
 

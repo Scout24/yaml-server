@@ -20,31 +20,31 @@ class YamlServerMain(YamlDaemon):
 
         # initialize super class
         YamlDaemon.__init__(self,*args,**kwargs)
-    
+
         self.logger = logging.getLogger()
         self.loghandler = logging.handlers.SysLogHandler(address='/dev/log')
         self.loghandler.setFormatter(logging.Formatter('yaml_server[' + str(os.getpid()) + ']: %(levelname)s: %(message)s'))
         self.logger.addHandler(self.loghandler)
         self.logger.setLevel(logging.INFO)
-    
+
         parser = optparse.OptionParser(usage=usage, version=yaml_server.__version__, prog="yaml_server")
         parser.add_option("--debug", dest="debug", action="store_true", default=False, help="Enable debug logging [%default]")
         parser.add_option("--confdir", dest="confdir", action="store", default="/etc/yaml_server", type="string", help="Directory for configuration files [%default]")
         options, self.args = parser.parse_args()
         if options.debug:
                 self.logger.setLevel(logging.DEBUG)
-    
+
         try:
             yaml_server.__config__ = YamlReader(options.confdir).get()
             self.logger.debug("Configured with %s" % yaml_server.__config__)
             if not ("locations" in yaml_server.__config__ and type(yaml_server.__config__["locations"]) is dict):
                 raise YamlServerException("locations key not defined or not a dict")
             yaml_server.__config__["locations"] = YamlLocations(yaml_server.__config__["locations"])
-            
+
             # load port from config
             self.port = yaml_server.__config__.get("port",8935)
             self.pidfile = yaml_server.__config__.get("pidfile","/var/run/yaml_server")
-            
+
             # override log level from config
             if "loglevel" in yaml_server.__config__ and not options.debug:
                 # do not change log level from config if debug specified on command line
@@ -53,7 +53,7 @@ class YamlServerMain(YamlDaemon):
         except Exception, e:
             self.logger.fatal("Could not initialize yaml_server configuration from %s: %s" % (options.confdir,str(e)))
             print "Could not initialize yaml_server configuration!"
-            raise 
+            raise
 
 
 
