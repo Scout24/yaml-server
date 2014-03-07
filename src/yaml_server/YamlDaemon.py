@@ -1,56 +1,63 @@
-import sys, os, time, atexit, pwd, grp, logging
+import sys
+import os
+import time
+import atexit
+import pwd
+import grp
+import logging
 from signal import SIGTERM, SIGKILL
 from yaml_server.YamlServerException import YamlServerException
 
-class YamlDaemon:
+
+class YamlDaemon(object):
     """
     A generic daemon class.
-    
+
     Usage: subclass the Daemon class and override the run() method
-    
+
     Found in http://www.jejik.com/articles/2007/02/a_simple_unix_linux_daemon_in_python/
     """
     args = []  # command line argments that are not options go here
-    
+
     def __init__(self, pidfile=None, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
         self.stdin = stdin
         self.stdout = stdout
         self.stderr = stderr
         self.pidfile = pidfile
         self.pid = None
-    
+
     def daemonize(self):
         """
         do the UNIX double-fork magic and then call run().
-        
+
         See Stevens' "Advanced Programming in the UNIX Environment" for details (ISBN 0201563177)
         http://www.erlenstar.demon.co.uk/unix/faq_2.html#SEC16
         """
-        
-        try: 
-            pid = os.fork() 
+
+        try:
+            pid = os.fork()
             if pid > 0:
                 # first parent returns success
                 return True
-        except OSError, e: 
-            print "fork #1 failed: %d (%s)" % (e.errno, e.strerror) >> sys.stderr 
+        except OSError, e:
+            print "fork #1 failed: %d (%s)" % (e.errno, e.strerror) >> sys.stderr
             return False
-    
+
         # decouple from parent environment
-        os.chdir("/") 
-        os.setsid() 
-        os.umask(0) 
-    
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
+
         # do second fork
-        try: 
-            pid = os.fork() 
+        try:
+            pid = os.fork()
             if pid > 0:
                 # exit from second parent
-                sys.exit(0) 
-        except OSError, e: 
+                sys.exit(0)
+        except OSError, e:
             self.logger.fatal("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
-            sys.exit(1) 
-    
+            sys.exit(1)
+
         # redirect standard file descriptors
         sys.stdout.flush()
         sys.stderr.flush()
@@ -60,7 +67,7 @@ class YamlDaemon:
         os.dup2(si.fileno(), sys.stdin.fileno())
         os.dup2(so.fileno(), sys.stdout.fileno())
         os.dup2(se.fileno(), sys.stderr.fileno())
-        
+
         # update pid in syslog output
         self.loghandler.setFormatter(logging.Formatter('yaml_server[' + str(os.getpid()) + ']: %(levelname)s: %(message)s'))
 
@@ -77,10 +84,10 @@ class YamlDaemon:
             else:
                 atexit.register(self.delpidfile)
         self.run()
-    
+
     def is_running(self):
         self.pid = self._read_pid()
-        
+
         if self.pid:
             # have pid, ping process
             try:
@@ -99,7 +106,6 @@ class YamlDaemon:
             # no pid means no process
             return False
 
-    
     def _read_pid(self):
         """
         Return pid from pidfile
@@ -116,22 +122,21 @@ class YamlDaemon:
         except Exception, e:
             # some other error, throw up
             raise YamlServerException("Could not read pid from pidfile %s: %s" % (self.pidfile, str(e)))
-        
-        return self.pid
 
+        return self.pid
 
     def delpidfile(self):
         os.remove(self.pidfile)
 
     def drop_privileges(self, uid_name=None, gid_name=None):
         """ Drop privileges
-        
+
         Found in https://github.com/zedshaw/python-lust/blob/master/lust/unix.py
         """
         if os.getuid() != 0:
             self.logger.warning("Must be root to drop privileges!")
             return
-    
+
         # Get the uid/gid from the name. If no group given, then derive group from uid_name
         if uid_name is None:
             uid_name = "nobody"  # builtin default is nobody
@@ -142,17 +147,16 @@ class YamlDaemon:
             running_gid = grp.getgrnam(gid_name).gr_gid
 
         self.logger.debug("Running as %r.%r" % (running_uid, running_gid))
-    
+
         # Remove group privileges
         os.setgroups([])
-    
+
         # Try setting the new uid/gid
         os.setgid(running_gid)
         os.setuid(running_uid)
-    
+
         # Ensure a very conservative umask
         os.umask(077)
-
 
     def start(self):
         """
@@ -174,7 +178,7 @@ class YamlDaemon:
         else:
             print "Could not start service!" >> sys.stderr
             return 1
-    
+
     def status(self):
         if self.is_running():
             print "Running with pid %r" % self.pid
@@ -188,13 +192,13 @@ class YamlDaemon:
         Stop the daemon
         """
         self._read_pid()
-    
+
         if not self.pid:
             # no pid means that there is no process
             print "Not running"
             return 0  # not an error in a restart
 
-        # Try killing the daemon process    
+        # Try killing the daemon process
         try:
             for i in range(100):
                 os.kill(self.pid, SIGTERM)
