@@ -5,13 +5,13 @@ import SimpleHTTPServer
 import logging
 import hashlib
 
+
 class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def __init__(self, *args):
         self.logger = logging.getLogger(__name__)
         # the top-level ancestor (BaseRequestHandler) is NOT a new-style class and does NOT inherit object!
         SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, *args)
-
 
     def do_GET(self, onlyHeaders=False):
         '''Serve a GET request'''
@@ -51,7 +51,7 @@ class YamlServerRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             if last_modified_time:
                 self.send_header("Last-Modified", self.date_time_string(last_modified_time))
         if etag:
-            self.send_header("ETag",etag)
+            self.send_header("ETag", etag)
         self.end_headers()
 
         if not onlyHeaders and content:
