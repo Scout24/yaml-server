@@ -23,7 +23,10 @@ class YamlServerMain(YamlDaemon):
         YamlDaemon.__init__(self, *args, **kwargs)
 
         self.logger = logging.getLogger()
-        self.loghandler = logging.handlers.SysLogHandler(address='/dev/log')
+        try:
+            self.loghandler = logging.handlers.SysLogHandler(address='/dev/log')
+        except Exception:
+            self.loghandler = logging.handlers.SysLogHandler()
         self.loghandler.setFormatter(logging.Formatter('yaml_server[' + str(os.getpid()) + ']: %(levelname)s: %(message)s'))
         self.logger.addHandler(self.loghandler)
         self.logger.setLevel(logging.INFO)
