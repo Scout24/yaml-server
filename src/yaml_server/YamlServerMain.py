@@ -40,7 +40,13 @@ class YamlServerMain(YamlDaemon):
 
         try:
             yaml_server.__config__ = YamlReader(options.confdir).get()
+            # override log level from config
+            if "loglevel" in yaml_server.__config__ and not options.debug:
+                # do not change log level from config if debug specified on command line
+                self.logger.setLevel(yaml_server.__config__["loglevel"])
+                self.logger.debug("Setting log level to '%s'" % yaml_server.__config__["loglevel"])
             self.logger.debug("Configured with %s" % yaml_server.__config__)
+
             if not ("locations" in yaml_server.__config__ and type(yaml_server.__config__["locations"]) is dict):
                 raise YamlServerException("locations key not defined or not a dict")
             yaml_server.__config__["locations"] = YamlLocations(yaml_server.__config__["locations"])
@@ -49,11 +55,6 @@ class YamlServerMain(YamlDaemon):
             self.port = yaml_server.__config__.get("port", 8935)
             self.pidfile = yaml_server.__config__.get("pidfile", "/var/run/yaml_server")
 
-            # override log level from config
-            if "loglevel" in yaml_server.__config__ and not options.debug:
-                # do not change log level from config if debug specified on command line
-                self.logger.setLevel(yaml_server.__config__["loglevel"])
-                self.logger.debug("Setting log level to '%s'" % yaml_server.__config__["loglevel"])
         except Exception, e:
             self.logger.fatal("Could not initialize yaml_server configuration from %s: %s" % (options.confdir, str(e)))
             print "Could not initialize yaml_server configuration!"
