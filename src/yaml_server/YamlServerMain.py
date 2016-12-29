@@ -33,7 +33,7 @@ class YamlServerMain(YamlDaemon):
         parser.add_option("--confdir", dest="confdir", action="store", default="/etc/yaml_server", type="string", help="Directory for configuration files [%default]")
         options, self.args = parser.parse_args()
         if options.debug:
-                self.logger.setLevel(logging.DEBUG)
+            self.logger.setLevel(logging.DEBUG)
 
         try:
             yaml_server.__config__ = YamlReader(options.confdir).get()
@@ -49,8 +49,8 @@ class YamlServerMain(YamlDaemon):
             # override log level from config
             if "loglevel" in yaml_server.__config__ and not options.debug:
                 # do not change log level from config if debug specified on command line
-                self.logger.debug("Setting log level to '%s'" % yaml_server.__config__["loglevel"])
                 self.logger.setLevel(yaml_server.__config__["loglevel"])
+                self.logger.debug("Setting log level to '%s'" % yaml_server.__config__["loglevel"])
         except Exception, e:
             self.logger.fatal("Could not initialize yaml_server configuration from %s: %s" % (options.confdir, str(e)))
             print "Could not initialize yaml_server configuration!"
