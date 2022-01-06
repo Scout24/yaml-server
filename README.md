@@ -1,6 +1,8 @@
 yaml-server
 ===========
 
+Scout24 have moved away from using this application. Therefor this applcation is deprecated and the repository will be archived.  
+
 Export a directory of YAML files via HTTP. The YAML files (`*.yaml`) are sorted alphabetically and merged:
 
 * lists get appended
